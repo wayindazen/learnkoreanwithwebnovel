@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>선조건 충족</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div id="start-screen">
+        <div class="start-left">
+            <div class="title-container">
+                <h1 class="main-title">선조건 충족</h1>
+            </div>
+        </div>
+        <div class="start-right">
+            <div class="character-grid">
+                <div class="char-card" onclick="selectCharacter('yona')">
+                    <div class="char-img-wrapper"><img src="yona.jpg" alt="서요나"></div>
+                    <span>서요나</span>
+                </div>
+                <div class="char-card" onclick="selectCharacter('yonu')">
+                    <div class="char-img-wrapper"><img src="yonu.jpg" alt="강연우"></div>
+                    <span>강연우 / Invader</span>
+                </div>
+                <div class="char-card" onclick="selectCharacter('sera')">
+                    <div class="char-img-wrapper"><img src="sera.jpg" alt="임세라"></div>
+                    <span>임세라</span>
+                </div>
+                <div class="char-card" onclick="selectCharacter('genji')">
+                    <div class="char-img-wrapper"><img src="genji.jpg" alt="겐지"></div>
+                    <span>겐지</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- ЭКРАН КАРТЫ ГЛАВ -->
+<div id="map-screen" class="hidden">
+    <!-- Кнопка назад -->
+    <button class="back-nav-btn" onclick="location.reload()">◀</button>
+
+    <!-- КОНТЕЙНЕР ДЛЯ ПЕРЕКЛЮЧАТЕЛЕЙ (в верхнем правом углу) -->
+    <div class="side-controls-container">
+        <!-- Языки -->
+        <div class="lang-toggle-wrapper">
+            <span class="lang-label">EN</span>
+            <label class="switch-control">
+                <input type="checkbox" id="language-checkbox">
+                <span class="slider-round"></span>
+            </label>
+            <span class="lang-label">RU</span>
+        </div>
+
+        <!-- Кнопка сброса -->
+        <button id="reset-progress-btn" onclick="resetGame()">RESET PROGRESS</button>
+    </div>
+
+    <!-- ОСНОВНАЯ ПАНЕЛЬ КАРТЫ -->
+    <div class="map-layout">
+        <div class="map-sidebar">
+            <div class="sidebar-content">
+                <img id="map-char-img" src="" alt="Character">
+                <h2 id="map-char-name-display"></h2>
+                <div class="char-mini-profile">
+                    <p id="profile-realname" class="profile-note"></p>
+                    <p id="profile-age"></p>
+                    <p id="profile-job"></p>
+                </div>
+            </div>
+        </div>
+        <div class="map-main">
+            <div id="map-container">
+                <svg id="map-lines"></svg>
+                <div id="chapters-nodes"></div>
+            </div>
+        </div>
+    </div>
+</div> <!-- Вот этот тег теперь закрывает экран карты В САМОМ КОНЦЕ -->
+
+    <!-- ИГРОВОЙ ЭКРАН -->
+    <div id="game-screen" class="hidden">
+        <button class="back-nav-btn" onclick="backToMap()">◀</button>
+        
+        <div id="story-side">
+            <div id="chapter-bg-overlay"></div>
+            <div id="story-ui-container">
+                <div class="story-header">
+                    <h1 id="chapter-title">1장</h1>
+                    <label class="analysis-switch">
+                        <input type="checkbox" id="analysis-toggle">
+                        <span class="analysis-slider"></span>
+                    </label>
+                </div>
+<button id="btn-quiz" class="quiz-trigger-btn" onclick="openQuiz()">QUIZ</button>
+                    <button id="nav-prev-node" class="side-nav-btn left" onclick="navigateHistory(-1)">‹</button>
+                    <button id="nav-next-node" class="side-nav-btn right" onclick="navigateHistory(1)">›</button>
+                 
+
+                <div id="text-area-box">
+                 <div id="text-display"></div>
+                    <div id="choices-container"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="sticker-board">
+            <img src="1000047560-removebg-preview.png" id="board-placeholder-img" alt="decor">
+            <div id="stickers-container"></div>
+        </div>
+    </div>
+
+    <div id="quiz-overlay" class="hidden">
+    <div id="quiz-window">
+        <span class="close-quiz" onclick="closeQuiz()">✖</span>
+        
+        <!-- Стартовый экран -->
+<div id="quiz-start-screen" class="quiz-container">
+    <h2 class="quiz-title">QUIZ</h2>
+    
+    <div class="quiz-section">
+        <p>Scope:</p>
+        <div class="quiz-toggle-group">
+            <button class="quiz-scope active" data-scope="current">This section</button>
+            <button class="quiz-scope" data-scope="all">Whole story</button>
+        </div>
+    </div>
+
+    <div class="quiz-section">
+        <p>Modes:</p>
+        <div class="quiz-toggle-group">
+            <button class="quiz-mode active" data-mode="words">Words only</button>
+            <button class="quiz-mode" data-mode="grammar">Grammar only</button>
+            <button class="quiz-mode" data-mode="mixed">Words and Grammar</button>
+        </div>
+    </div>
+
+    <button id="btn-quiz-start" class="big-quiz-btn">START</button>
+</div>
+
+<div id="quiz-game-screen" class="hidden quiz-container">
+    <div id="quiz-question-text"></div>
+    <div id="quiz-options-container"></div>
+    <div id="quiz-input-container" style="display:none;">
+        <input type="text" id="quiz-input-field" placeholder="Type in Korean...">
+        <button id="quiz-input-submit" class="big-quiz-btn">OK</button>
+    </div>
+    <button id="quiz-next-btn" class="hidden">›</button>
+</div>
+
+<!-- 2. Результат (отдельный контейнер для центровки) -->
+<div id="quiz-result-screen" class="hidden quiz-container">
+    <h2 class="quiz-title">Result</h2>
+    <div id="quiz-final-score">0 / 8</div>
+    <button id="quiz-result-close" class="big-quiz-btn" onclick="closeQuiz()">CLOSE</button>
+</div>
+    </div>
+</div>
+
+    <script src="script.js"></script>
+</body>
+</html>
