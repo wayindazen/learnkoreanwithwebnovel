@@ -2,7 +2,7 @@
 let storyData = {};
 let grammarData = {};
 let stickerZIndex = 100;
-let authorMode = true; 
+let authorMode = false; 
 
 let gameState = {
     character: null,
